@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💝 A surprise for you</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #2d1b2e 0%, #1a0f1a 50%, #2d1b2e 100%);
+      font-family: 'Quicksand', sans-serif;
+      color: #fce4ec;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 20% 80%, rgba(233, 30, 99, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(156, 39, 176, 0.12) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .page {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      max-width: 90vw;
+      position: relative;
+      z-index: 1;
+    }
+    .page.active {
+      display: flex;
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 20px rgba(233, 30, 99, 0.3);
+    }
+    .page-1 h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      margin-bottom: 2rem;
+    }
+    .secret-input {
+      width: 100%;
+      max-width: 280px;
+      padding: 1rem 1.25rem;
+      font-size: 1.1rem;
+      font-family: inherit;
+      border: 2px solid rgba(233, 30, 99, 0.4);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fce4ec;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .secret-input::placeholder {
+      color: rgba(252, 228, 236, 0.5);
+    }
+    .secret-input:focus {
+      border-color: rgba(233, 30, 99, 0.8);
+      box-shadow: 0 0 24px rgba(233, 30, 99, 0.2);
+    }
+    .hint {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+    /* Page 2 - Valentine question */
+    .page-2 h2 {
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      margin-bottom: 2.5rem;
+    }
+    .buttons-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+    }
+    .btn {
+      padding: 0.9rem 1.75rem;
+      font-size: 1.2rem;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .btn-yes {
+      background: linear-gradient(135deg, #e91e63, #c2185b);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(233, 30, 99, 0.4);
+      z-index: 2;
+    }
+    .btn-yes:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 28px rgba(233, 30, 99, 0.5);
+    }
+    .btn-yes.big {
+      transform: scale(1.35);
+      box-shadow: 0 8px 32px rgba(233, 30, 99, 0.6);
+      animation: pulse 0.6s ease infinite alternate;
+    }
+    @keyframes pulse {
+      to { transform: scale(1.4); }
+    }
+    .btn-no {
+      background: linear-gradient(135deg, #424242, #212121);
+      color: #e0e0e0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      transition: left 0.12s ease-out, top 0.12s ease-out;
+    }
+    .btn-no.running {
+      position: absolute;
+    }
+    .btn-no:hover {
+      cursor: default;
+    }
+    /* Page 3 - Final */
+    .page-3 .message {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      font-weight: 600;
+      line-height: 1.4;
+      max-width: 20ch;
+      animation: fadeIn 0.8s ease, heartBeat 1.5s ease 0.5s infinite;
+    }
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .hearts {
+      font-size: 2rem;
+      margin-top: 1.5rem;
+      letter-spacing: 0.5rem;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <section id="page1" class="page page-1 active">
+    <h1>Write the word that describes us</h1>
+    <input type="text" class="secret-input" id="secretInput" placeholder="Type the secret word..." autocomplete="off">
+  </section>
+
+  <section id="page2" class="page page-2">
+    <h2>Will you be my valentine?</h2>
+    <div class="buttons-wrap">
+      <button type="button" class="btn btn-yes" id="btnYes">YES</button>
+      <button type="button" class="btn btn-no" id="btnNo">NO</button>
+    </div>
+  </section>
+
+  <section id="page3" class="page page-3">
+    <p class="message">I LOVE YOU,<br>THANK YOU FOR BEING MY VALENTINE</p>
+    <p class="hearts">💕 💗 💖 💕</p>
+  </section>
+
+  <script>
+    (function () {
+      const secretWord = 'puzzle';
+      const page1 = document.getElementById('page1');
+      const page2 = document.getElementById('page2');
+      const page3 = document.getElementById('page3');
+      const secretInput = document.getElementById('secretInput');
+      const btnYes = document.getElementById('btnYes');
+      const btnNo = document.getElementById('btnNo');
+
+      // Step 1: unlock when she types "puzzle" (case-insensitive)
+      secretInput.addEventListener('input', function () {
+        if (this.value.trim().toLowerCase() === secretWord) {
+          page1.classList.remove('active');
+          page2.classList.add('active');
+        }
+      });
+
+      // Step 2: NO runs away smoothly; by default YES and NO are on the same line
+      const wrap = btnNo.parentElement;
+      const padding = 50;
+      let noRunning = false;
+      let currentNoX = 0;
+      let currentNoY = 0;
+      let targetNoX = 0;
+      let targetNoY = 0;
+      const lerp = 0.14;
+      const runRadius = 100;
+      let rafId = null;
+
+      function getNoCenter() {
+        const r = btnNo.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      }
+
+      function startNoRunning() {
+        if (noRunning) return;
+        noRunning = true;
+        btnNo.classList.add('running');
+        const wrapRect = wrap.getBoundingClientRect();
+        const noRect = btnNo.getBoundingClientRect();
+        currentNoX = noRect.left - wrapRect.left;
+        currentNoY = noRect.top - wrapRect.top;
+        targetNoX = currentNoX;
+        targetNoY = currentNoY;
+        btnNo.style.left = currentNoX + 'px';
+        btnNo.style.top = currentNoY + 'px';
+      }
+
+      function updateNoTarget(clientX, clientY) {
+        const center = getNoCenter();
+        const dx = clientX - center.x;
+        const dy = clientY - center.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const run = 100;
+        const nx = -dx / dist;
+        const ny = -dy / dist;
+        const w = wrap.offsetWidth - btnNo.offsetWidth - padding * 2;
+        const h = wrap.offsetHeight - btnNo.offsetHeight - padding * 2;
+        targetNoX = currentNoX + nx * run + (Math.random() - 0.5) * 40;
+        targetNoY = currentNoY + ny * run + (Math.random() - 0.5) * 40;
+        targetNoX = Math.max(padding, Math.min(w + padding, targetNoX));
+        targetNoY = Math.max(padding, Math.min(h + padding, targetNoY));
+      }
+
+      function animateNo() {
+        if (!noRunning || !page2.classList.contains('active')) return;
+        currentNoX += (targetNoX - currentNoX) * lerp;
+        currentNoY += (targetNoY - currentNoY) * lerp;
+        btnNo.style.left = currentNoX + 'px';
+        btnNo.style.top = currentNoY + 'px';
+        rafId = requestAnimationFrame(animateNo);
+      }
+
+      document.addEventListener('mousemove', function (e) {
+        if (!page2.classList.contains('active')) return;
+        const center = getNoCenter();
+        const dist = Math.hypot(e.clientX - center.x, e.clientY - center.y);
+        if (dist < runRadius) {
+          btnYes.classList.add('big');
+          startNoRunning();
+          updateNoTarget(e.clientX, e.clientY);
+          if (!rafId) rafId = requestAnimationFrame(animateNo);
+        } else {
+          btnYes.classList.remove('big');
+        }
+      });
+
+      btnYes.addEventListener('click', function () {
+        page2.classList.remove('active');
+        page3.classList.add('active');
+      });
+    })();
+  </script>
+</body>
+</html>
